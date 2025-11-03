@@ -34,7 +34,7 @@ public class Game {
         return copy;
     }
 
-    public boolean isIndiseBoard(int x, int y) {
+    public boolean isInsideBoard(int x, int y) {
         return x >= 0 && x < 8 && y >= 0 && y < 8;
     }
 
