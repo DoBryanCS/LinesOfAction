@@ -4,7 +4,7 @@ import java.net.*;
 
 class Client {
     private static void applyMove(String move, int[][] board) {
-        move = move.trim();
+        move = move.toUpperCase().replaceAll("\\s+", "");
 
         int fromY = move.charAt(0) - 'A';
         int fromX = 8 - Character.getNumericValue(move.charAt(1));
@@ -52,10 +52,10 @@ class Client {
                     int x=0,y=0;
                     for(int i=0; i<boardValues.length;i++){
                         board[x][y] = Integer.parseInt(boardValues[i]);
-                        x++;
-                        if(x == 8){
-                            x = 0;
-                            y++;
+                        y++;
+                        if(y == 8){
+                            y = 0;
+                            x++;
                         }
                     }
                     game = new Game(board);
@@ -67,7 +67,6 @@ class Client {
                     String move = bestMove.toString();
                     System.out.println("AI joue : " + move);
                     applyMove(move, board);
-                    game = game.applyMove(bestMove);
 
                     output.write(move.getBytes(),0,move.length());
                     output.flush();
@@ -89,14 +88,12 @@ class Client {
                     int x=0,y=0;
                     for(int i=0; i<boardValues.length;i++){
                         board[x][y] = Integer.parseInt(boardValues[i]);
-                        x++;
-                        if(x == 8){
-                            x = 0;
-                            y++;
+                        y++;
+                        if(y == 8){
+                            y = 0;
+                            x++;
                         }
                     }
-
-                    game = new Game(board);
                 }
 
 
@@ -113,6 +110,7 @@ class Client {
                     System.out.println("Dernier coup :"+ s);
 
                     applyMove(s, board);
+
                     game = new Game(board);
 
                     System.out.println("Entrez votre coup : ");
@@ -121,7 +119,6 @@ class Client {
                     String move = bestMove.toString();
                     System.out.println("AI joue : " + move);
                     applyMove(move, board);
-                    game = game.applyMove(bestMove);
 
                     output.write(move.getBytes(),0,move.length());
                     output.flush();
