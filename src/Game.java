@@ -110,6 +110,18 @@ public class Game {
         return moves;
     }
 
+    public int evaluate(int player) {
+        double random = Math.random();
+
+        if (random < 0.4) {
+            return 100;
+        } else if (random < 0.8 ) {
+            return -100;
+        } else {
+            return 0;
+        }
+    }
+
     public String toString() {
         return "";
     }

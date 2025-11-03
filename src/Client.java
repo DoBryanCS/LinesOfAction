@@ -3,6 +3,19 @@ import java.net.*;
 
 
 class Client {
+    private static void applyMove(String move, int[][] board) {
+        move = move.trim();
+
+        int fromY = move.charAt(0) - 'A';
+        int fromX = 8 - Character.getNumericValue(move.charAt(1));
+        int toY = move.charAt(3) - 'A';
+        int toX = 8 - Character.getNumericValue(move.charAt(4));
+
+        int piece = board[fromX][fromY];
+        board[fromX][fromY] = Game.EMPTY;
+        board[toX][toY] = piece;
+    }
+
     public static void main(String[] args) {
 
         Socket MyClient;
@@ -16,6 +29,10 @@ class Client {
             input    = new BufferedInputStream(MyClient.getInputStream());
             output   = new BufferedOutputStream(MyClient.getOutputStream());
             BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+
+            Game game = null;
+            AI ai = null;
+
             while(1 == 1){
                 char cmd = 0;
 
@@ -41,16 +58,25 @@ class Client {
                             y++;
                         }
                     }
+                    game = new Game(board);
 
                     System.out.println("Nouvelle partie! Vous jouer blanc, entrez votre premier coup : ");
-                    String move = null;
-                    move = console.readLine();
+                    ai = new AI(Game.RED);
+
+                    Move bestMove = ai.getBestMove(game);
+                    String move = bestMove.toString();
+                    System.out.println("AI joue : " + move);
+                    applyMove(move, board);
+                    game = game.applyMove(bestMove);
+
                     output.write(move.getBytes(),0,move.length());
                     output.flush();
                 }
                 // Debut de la partie en joueur Noir
                 if(cmd == '2'){
                     System.out.println("Nouvelle partie! Vous jouer noir, attendez le coup des blancs");
+                    ai = new AI(Game.BLACK);
+
                     byte[] aBuffer = new byte[1024];
 
                     int size = input.available();
@@ -69,6 +95,8 @@ class Client {
                             y++;
                         }
                     }
+
+                    game = new Game(board);
                 }
 
 
@@ -83,9 +111,18 @@ class Client {
 
                     String s = new String(aBuffer);
                     System.out.println("Dernier coup :"+ s);
+
+                    applyMove(s, board);
+                    game = new Game(board);
+
                     System.out.println("Entrez votre coup : ");
-                    String move = null;
-                    move = console.readLine();
+
+                    Move bestMove = ai.getBestMove(game);
+                    String move = bestMove.toString();
+                    System.out.println("AI joue : " + move);
+                    applyMove(move, board);
+                    game = game.applyMove(bestMove);
+
                     output.write(move.getBytes(),0,move.length());
                     output.flush();
 
