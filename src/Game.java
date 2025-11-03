@@ -45,7 +45,7 @@ public class Game {
             int currentX = x + i * dx;
             int currentY = y + i * dy;
 
-            if (isIndiseBoard(currentX, currentY) && board[currentX][currentY] != EMPTY) {
+            if (isInsideBoard(currentX, currentY) && board[currentX][currentY] != EMPTY) {
                 count++;
             }
         }
@@ -62,7 +62,7 @@ public class Game {
             int currentX = x + dx * i;
             int currentY = y + dy * i;
 
-            if (isIndiseBoard(currentX, currentY)) {
+            if (isInsideBoard(currentX, currentY)) {
                 int piece = board[currentX][currentY];
 
                 if (isOpponent(piece, player)) {
@@ -92,7 +92,7 @@ public class Game {
                         int newX = x + dx * distance;
                         int newY = y + dy * distance;
 
-                        if (isIndiseBoard(newX, newY)) {
+                        if (isInsideBoard(newX, newY)) {
                             int target = board[newX][newY];
 
                             if (!hasOpponentBetween(x, y, dx, dy, distance, player)) {
