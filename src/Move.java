@@ -1,21 +1,21 @@
 public class Move {
-    public int fromX;
-    public int fromY;
-    public int toX;
-    public int toY;
+    public int fromRow;
+    public int fromCol;
+    public int toRow;
+    public int toCol;
 
-    public Move(int fromX, int fromY, int toX, int toY) {
-        this.fromX = fromX;
-        this.fromY = fromY;
-        this.toX = toX;
-        this.toY = toY;
+    public Move(int fromRow, int fromCol, int toRow, int toCol) {
+        this.fromRow = fromRow;
+        this.fromCol = fromCol;
+        this.toRow = toRow;
+        this.toCol = toCol;
     }
 
     public String toString() {
-        char fromCol = (char) ('A' + fromY);
-        int fromRow = 8 - fromX;
-        char toCol = (char) ('A' + toY);
-        int toRow = 8 - toX;
+        char fromCol = (char) ('A' + this.fromCol);
+        int fromRow = 8 - this.fromRow;
+        char toCol = (char) ('A' + this.toCol);
+        int toRow = 8 - this.toRow;
         return "" + fromCol + fromRow + "-" + toCol + toRow;
     }
 }

@@ -6,14 +6,14 @@ class Client {
     private static void applyMove(String move, int[][] board) {
         move = move.toUpperCase().replaceAll("\\s+", "");
 
-        int fromY = move.charAt(0) - 'A';
-        int fromX = 8 - Character.getNumericValue(move.charAt(1));
-        int toY = move.charAt(3) - 'A';
-        int toX = 8 - Character.getNumericValue(move.charAt(4));
+        int fromCol = move.charAt(0) - 'A';
+        int fromRow = 8 - Character.getNumericValue(move.charAt(1));
+        int toCol = move.charAt(3) - 'A';
+        int toRow = 8 - Character.getNumericValue(move.charAt(4));
 
-        int piece = board[fromX][fromY];
-        board[fromX][fromY] = Game.EMPTY;
-        board[toX][toY] = piece;
+        int piece = board[fromRow][fromCol];
+        board[fromRow][fromCol] = Game.EMPTY;
+        board[toRow][toCol] = piece;
     }
 
     public static void main(String[] args) {
