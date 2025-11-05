@@ -3,7 +3,7 @@ import java.net.*;
 
 
 class Client {
-    private static void applyMove(String move, int[][] board) {
+    private static void applyMove(String move, int[][] board, Game game) {
         move = move.toUpperCase().replaceAll("\\s+", "");
 
         int fromCol = move.charAt(0) - 'A';
@@ -14,6 +14,8 @@ class Client {
         int piece = board[fromRow][fromCol];
         board[fromRow][fromCol] = Game.EMPTY;
         board[toRow][toCol] = piece;
+        game.getBoard()[fromRow][fromCol] = Game.EMPTY;
+        game.getBoard()[toRow][toCol] = piece;
     }
 
     public static void main(String[] args) {
@@ -49,13 +51,13 @@ class Client {
                     System.out.println(s);
                     String[] boardValues;
                     boardValues = s.split(" ");
-                    int x=0,y=0;
+                    int row=0,col=0;
                     for(int i=0; i<boardValues.length;i++){
-                        board[x][y] = Integer.parseInt(boardValues[i]);
-                        y++;
-                        if(y == 8){
-                            y = 0;
-                            x++;
+                        board[row][col] = Integer.parseInt(boardValues[i]);
+                        col++;
+                        if(col == 8){
+                            col = 0;
+                            row++;
                         }
                     }
                     game = new Game(board);
@@ -66,7 +68,7 @@ class Client {
                     Move bestMove = ai.getBestMove(game);
                     String move = bestMove.toString();
                     System.out.println("AI joue : " + move);
-                    applyMove(move, board);
+                    applyMove(move, board, game);
 
                     output.write(move.getBytes(),0,move.length());
                     output.flush();
@@ -85,15 +87,16 @@ class Client {
                     System.out.println(s);
                     String[] boardValues;
                     boardValues = s.split(" ");
-                    int x=0,y=0;
+                    int row=0,col=0;
                     for(int i=0; i<boardValues.length;i++){
-                        board[x][y] = Integer.parseInt(boardValues[i]);
-                        y++;
-                        if(y == 8){
-                            y = 0;
-                            x++;
+                        board[row][col] = Integer.parseInt(boardValues[i]);
+                        col++;
+                        if(col == 8){
+                            col = 0;
+                            row++;
                         }
                     }
+                    game = new Game(board);
                 }
 
 
@@ -109,16 +112,14 @@ class Client {
                     String s = new String(aBuffer);
                     System.out.println("Dernier coup :"+ s);
 
-                    applyMove(s, board);
-
-                    game = new Game(board);
+                    applyMove(s, board, game);
 
                     System.out.println("Entrez votre coup : ");
 
                     Move bestMove = ai.getBestMove(game);
                     String move = bestMove.toString();
                     System.out.println("AI joue : " + move);
-                    applyMove(move, board);
+                    applyMove(move, board, game);
 
                     output.write(move.getBytes(),0,move.length());
                     output.flush();

@@ -20,7 +20,7 @@ public class Game {
         return board;
     }
 
-    public Game applyMove(Move move) {
+    public Game previewMove(Move move) {
         Game copy = new Game(this.board);
         int fromRow = move.fromRow;
         int fromCol = move.fromCol;

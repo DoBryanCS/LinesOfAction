@@ -25,7 +25,7 @@ public class AI {
         }
 
         for (Move move: moves) {
-            Game newGame = game.applyMove(move);
+            Game newGame = game.previewMove(move);
             int score = alphaBeta(newGame, MAX_DEPTH, MAX_PLAYER, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
             if (score > bestScore) {
@@ -47,7 +47,7 @@ public class AI {
         if (currentPlayer == MAX_PLAYER) {
             int score = Integer.MIN_VALUE;
             for (Move m : game.generateMoves(currentPlayer)) {
-                Game newGame = game.applyMove(m);
+                Game newGame = game.previewMove(m);
                 score = Math.max(score, alphaBeta(newGame, depth - 1, MIN_PLAYER, alpha, beta));
                 if (score >= beta) break;
                 alpha = Math.max(alpha, score);
@@ -57,7 +57,7 @@ public class AI {
             int score = Integer.MAX_VALUE;
 
             for (Move m : game.generateMoves(currentPlayer)) {
-                Game newGame = game.applyMove(m);
+                Game newGame = game.previewMove(m);
                 score = Math.min(score, alphaBeta(newGame, depth - 1, MAX_PLAYER, alpha, beta));
                 if (score <= alpha) break;
                 beta = Math.min(beta, score);
