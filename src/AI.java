@@ -3,7 +3,7 @@ import java.util.List;
 public class AI {
     private final int MAX_PLAYER;
     private final int MIN_PLAYER;
-    private static final int MAX_DEPTH = 3;
+    private static final int MAX_DEPTH = 4 ;
 
 
     public AI(int MAX_PLAYER) {
@@ -26,7 +26,7 @@ public class AI {
 
         for (Move move: moves) {
             Game newGame = game.previewMove(move);
-            int score = alphaBeta(newGame, MAX_DEPTH, MAX_PLAYER, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            int score = alphaBeta(newGame, MAX_DEPTH, MIN_PLAYER, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
             if (score > bestScore) {
                 bestScore = score;
