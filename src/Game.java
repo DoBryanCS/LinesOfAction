@@ -6,6 +6,11 @@ public class Game {
     public static final int BLACK = 2;
     public static final int RED = 4;
 
+    private static final int[][] DIRECTIONS = {
+            {-1, 0}, {1, 0}, {0, 1}, {0, -1},
+            {-1, 1}, {-1, -1}, {1, 1}, {1, -1}
+    };
+
     private int[][] board = new int[8][8];
 
     public Game(int[][] initialBoard) {
@@ -80,12 +85,7 @@ public class Game {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] == player) {
-                    int[][] directions = {
-                            {-1, 0}, {1, 0}, {0, 1}, {0, -1},
-                            {-1, 1}, {-1, -1}, {1, 1}, {1, -1}
-                    };
-
-                    for (int[] direction : directions) {
+                    for (int[] direction : DIRECTIONS) {
                         int directionRow = direction[0];
                         int directionColumn = direction[1];
                         int distance = countPiecesInLine(row, col, directionRow, directionColumn);
@@ -111,15 +111,88 @@ public class Game {
     }
 
     public int evaluate(int player) {
-        double random = Math.random();
+        int opponent = (player == RED) ? BLACK : RED;
 
-        if (random < 0.4) {
-            return 100;
-        } else if (random < 0.8 ) {
-            return -100;
-        } else {
+        GroupInfo playerGroupInfo = defineGroups(player);
+        GroupInfo opponentGroupInfo = defineGroups(opponent);
+
+        if (isConnected(playerGroupInfo)) {
+            return 100000;
+        }
+        if (isConnected(opponentGroupInfo)) {
+            return -100000;
+        }
+
+        int score = 0;
+
+        score += (opponentGroupInfo.groupCount - playerGroupInfo.groupCount) * 200;
+        score += (playerGroupInfo.biggestGroupSize - opponentGroupInfo.biggestGroupSize) * 20;
+        score += (playerGroupInfo.totalPieces - opponentGroupInfo.totalPieces) * 5;
+
+        return score;
+    }
+
+    private static class GroupInfo {
+        int groupCount;
+        int biggestGroupSize;
+        int totalPieces;
+
+        GroupInfo(int groupCount, int biggestGroupSize, int totalPieces) {
+            this.groupCount = groupCount;
+            this.biggestGroupSize = biggestGroupSize;
+            this.totalPieces = totalPieces;
+        }
+    }
+
+    private GroupInfo defineGroups(int player) {
+        boolean[][] visited = new boolean[8][8];
+        int groupCount = 0;
+        int biggestGroupSize = 0;
+        int totalPieces = 0;
+
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                if (board[r][c] == player) totalPieces++;
+            }
+        }
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == player && !visited[row][col]) {
+                    groupCount++;
+                    biggestGroupSize = Math.max(biggestGroupSize, searchConnected(row, col, player, visited));
+                }
+            }
+        }
+
+        return new GroupInfo(groupCount, biggestGroupSize, totalPieces);
+    }
+
+    private int searchConnected(int row, int col, int player, boolean[][] visited) {
+        if (!isInsideBoard(row, col) || visited[row][col] || board[row][col] != player) {
             return 0;
         }
+
+        visited[row][col] = true;
+        int size = 1;
+
+        for (int[] direction : DIRECTIONS) {
+            int newRow = row + direction[0];
+            int newCol = col + direction[1];
+            size += searchConnected(newRow, newCol, player, visited);
+        }
+
+        return size;
+    }
+
+    private boolean isConnected(GroupInfo info) {
+        return info.totalPieces > 0
+                && info.groupCount == 1
+                && info.biggestGroupSize == info.totalPieces;
+    }
+
+    public boolean isGameOver() {
+        return isConnected(defineGroups(RED)) || isConnected(defineGroups(BLACK));
     }
 
     public String toString() {
