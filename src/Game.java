@@ -112,25 +112,29 @@ public class Game {
 
     public int evaluate(int player) {
         int opponent = (player == RED) ? BLACK : RED;
-
-        GroupInfo playerGroupInfo = defineGroups(player);
+        
+        GroupInfo playerGroupInfo   = defineGroups(player);
         GroupInfo opponentGroupInfo = defineGroups(opponent);
-
+        
         if (isConnected(playerGroupInfo)) {
-            return 100000;
+            return 1_000_000;
         }
         if (isConnected(opponentGroupInfo)) {
-            return -100000;
+            return -1_000_000;
         }
 
         int score = 0;
-
-        score += (opponentGroupInfo.groupCount - playerGroupInfo.groupCount) * 200;
-        score += (playerGroupInfo.biggestGroupSize - opponentGroupInfo.biggestGroupSize) * 20;
-        score += (playerGroupInfo.totalPieces - opponentGroupInfo.totalPieces) * 5;
+        
+        score += (opponentGroupInfo.groupCount - playerGroupInfo.groupCount) * 500;
+        score += (playerGroupInfo.biggestGroupSize - opponentGroupInfo.biggestGroupSize) * 40;
+        
+        int playerCentroidDistance   = computeCenterDistance(player);
+        int opponentCentroidDistance = computeCenterDistance(opponent);
+        score += (opponentCentroidDistance - playerCentroidDistance) * 15;
 
         return score;
     }
+
 
     private static class GroupInfo {
         int groupCount;
@@ -150,9 +154,9 @@ public class Game {
         int biggestGroupSize = 0;
         int totalPieces = 0;
 
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
-                if (board[r][c] == player) totalPieces++;
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == player) totalPieces++;
             }
         }
 
@@ -166,6 +170,39 @@ public class Game {
         }
 
         return new GroupInfo(groupCount, biggestGroupSize, totalPieces);
+    }
+
+    private int computeCenterDistance(int player) {
+        int sumRow = 0, sumCol = 0, count = 0;
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == player) {
+                    sumRow += row;
+                    sumCol += col;
+                    count++;
+                }
+            }
+        }
+
+        if (count == 0) return 0;
+
+        double centroidRow = (double) sumRow / count;
+        double centroidCol = (double) sumCol / count;
+
+        double dist = 0;
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == player) {
+                    double directionRow = row - centroidRow;
+                    double directionColumn = col - centroidCol;
+                    dist += directionRow * directionRow + directionColumn * directionColumn;
+                }
+            }
+        }
+
+        return (int) dist;
     }
 
     private int searchConnected(int row, int col, int player, boolean[][] visited) {

@@ -20,6 +20,12 @@ public class AI {
 
         List<Move> moves = game.generateMoves(MAX_PLAYER);
 
+        moves.sort((m1, m2) -> {
+            Game g1 = game.previewMove(m1);
+            Game g2 = game.previewMove(m2);
+            return Integer.compare(g2.evaluate(MAX_PLAYER), g1.evaluate(MAX_PLAYER));
+        });
+
         if (moves.isEmpty()) {
             return null;
         }
