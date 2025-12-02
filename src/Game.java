@@ -128,9 +128,9 @@ public class Game {
         score += (opponentGroupInfo.groupCount - playerGroupInfo.groupCount) * 500;
         score += (playerGroupInfo.biggestGroupSize - opponentGroupInfo.biggestGroupSize) * 40;
         
-        int playerCentroidDistance   = computeCenterDistance(player);
-        int opponentCentroidDistance = computeCenterDistance(opponent);
-        score += (opponentCentroidDistance - playerCentroidDistance) * 15;
+        int playerPieceDispersion   = computePieceDispersion(player);
+        int opponentPieceDispersion = computePieceDispersion(opponent);
+        score += (opponentPieceDispersion - playerPieceDispersion) * 15;
 
         return score;
     }
@@ -172,37 +172,39 @@ public class Game {
         return new GroupInfo(groupCount, biggestGroupSize, totalPieces);
     }
 
-    private int computeCenterDistance(int player) {
-        int sumRow = 0, sumCol = 0, count = 0;
+    private int computePieceDispersion(int player) {
+        int sumRow = 0;
+        int sumCol = 0;
+        int pieceCount  = 0;
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] == player) {
                     sumRow += row;
                     sumCol += col;
-                    count++;
+                    pieceCount++;
                 }
             }
         }
 
-        if (count == 0) return 0;
+        if (pieceCount  == 0) return 0;
 
-        double centroidRow = (double) sumRow / count;
-        double centroidCol = (double) sumCol / count;
+        double centroidRow = (double) sumRow / pieceCount ;
+        double centroidCol = (double) sumCol / pieceCount ;
 
-        double dist = 0;
+        double dispersion = 0;
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] == player) {
                     double directionRow = row - centroidRow;
                     double directionColumn = col - centroidCol;
-                    dist += directionRow * directionRow + directionColumn * directionColumn;
+                    dispersion += directionRow * directionRow + directionColumn * directionColumn;
                 }
             }
         }
 
-        return (int) dist;
+        return (int) dispersion;
     }
 
     private int searchConnected(int row, int col, int player, boolean[][] visited) {
