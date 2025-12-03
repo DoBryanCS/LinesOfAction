@@ -25,8 +25,11 @@ class Client {
         BufferedOutputStream output;
         int[][] board = new int[8][8];
 
+        String host = args.length > 0 ? args[0] : "localhost";
+        int port = args.length > 1 ? Integer.parseInt(args[1]) : 8888;
+
         try {
-            MyClient = new Socket("localhost", 8888);
+            MyClient = new Socket(host, port);
 
             input    = new BufferedInputStream(MyClient.getInputStream());
             output   = new BufferedOutputStream(MyClient.getOutputStream());
