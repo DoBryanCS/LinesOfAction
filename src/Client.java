@@ -28,7 +28,7 @@ class Client {
         String host = args.length > 0 ? args[0] : "localhost";
         int port = args.length > 1 ? Integer.parseInt(args[1]) : 8888;
 
-        System.out.println("Connexion au host " + host + " sur le port " + port + "...");
+        System.out.println("Connexion à " + host + ":" + port);
 
         try {
             MyClient = new Socket(host, port);
